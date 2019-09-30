@@ -1,0 +1,17 @@
+p {
+   color: #f8f9fa;
+}
+
+body {
+   background-color: #343a40;
+   padding: 3em;
+}
+
+
+.col-3.border.btn-warning {
+   /* border-radius: 50%; */
+}
+
+/* [id='0-0'] {
+   color: blue;
+} */
