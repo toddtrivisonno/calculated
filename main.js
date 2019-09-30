@@ -9,48 +9,60 @@ var input = "";
 var firstEntry = "";
 var operator = "";
 var followingEntry = "";
+var doMath = 0;
+
+function storeButtonsPressed(b) {
+
+   if (b == '+' || b == '-' || b == '\xF7' || b == '\xD7') {
+      operator = b;
+   }
+   if (firstEntry == "") {
+      firstEntry = input;
+   } else {
+      followingEntry = input;
+   }
+   input = "";
+
+}
 
 // When a button is pressed
 function btnPress() {
    var buttonPressed = this.id;
 
    switch (buttonPressed) {
+      case '=':
+         storeButtonsPressed(buttonPressed);
+         calcDisplay.innerHTML = firstEntry + operator + followingEntry;
+
+         break;
+
       case '+':
+         storeButtonsPressed(buttonPressed);
+
+         break;
+
       case '-':
+         storeButtonsPressed(buttonPressed);
+         break;
+
       case '\xF7':
+         storeButtonsPressed(buttonPressed);
+         break;
       case '\xD7':
-         if (buttonPressed == '+', '-', '\xF7', '\xD7') {
-            operator = buttonPressed;
-            console.log(operator);
-            console.log(input);
-         }
-         if (operator == '+', '-', '\xF7', '\xD7') {
-            firstEntry = input;
-            input = buttonPressed;
 
+         storeButtonsPressed(buttonPressed);
 
-            console.log(firstEntry);
-            console.log(input);
-            
-            
-         }
          break;
 
 
       default:
+         console.log({ input })
          if (input.length < 11) {
             input += buttonPressed
          }
          calcDisplay.innerHTML = input;
 
    }
-   // if (numberize != String && isNaN(numberize) != true) {
-   //    // calcDisplay.innerHTML = numberize;
-   //    if (firstEntry.length < 11) {
-   //       firstEntry += numberize.toString();
-   //       calcDisplay.innerHTML = firstEntry;
-   //    } 
-   // }
 }
 
 // Create Calculator UI
