@@ -9,24 +9,27 @@ var input = "";
 var firstEntry = "";
 var operator = "";
 var followingEntry = "";
-var doMath = 0;
+var checkEqualPressed = false;
 var operations = {
-   '+': function(a, b) { return a + b },
-   '-': function(a, b) { return a - b },
-   '\xD7': function(a, b) { return a * b },
-   '\xF7': function(a, b) { return a / b },
+   '+': function (a, b) { return a + b },
+   '-': function (a, b) { return a - b },
+   '\xD7': function (a, b) { return a * b },
+   '\xF7': function (a, b) { return a / b },
 };
 
 function storeButtonsPressed(b) {
-
    if (b == '+' || b == '-' || b == '\xF7' || b == '\xD7') {
       operator = b;
+      checkEqualPressed = false;
+   } else {
+      checkEqualPressed = true;
    }
    if (firstEntry == "") {
       firstEntry = input;
    } else {
       followingEntry = input;
    }
+   console.log({ input, b, firstEntry, operator, followingEntry });
    input = "";
 
 }
@@ -38,16 +41,43 @@ function btnPress() {
    switch (buttonPressed) {
 
       case 'AC':
-            storeButtonsPressed(buttonPressed);
-            calcDisplay.innerHTML = calcDisplay.innerHTML *= 0;
+         input = "0";
+         firstEntry = "";
+         operator = "";
+         followingEntry = "";
+         calcDisplay.innerHTML = input;
+         checkEqualPressed = false;
+         break;
+
+      case 'C':
+         input = "0";
+         calcDisplay.innerHTML = input;
+         checkEqualPressed = false;
+         break;
+
 
       case '+/-':
-         storeButtonsPressed(buttonPressed);
-         calcDisplay.innerHTML = calcDisplay.innerHTML *= -1;
+         input *= -1;
+         firstEntry = input;
+         calcDisplay.innerHTML = input;
+         checkEqualPressed = false;
+         break;
+
+      case '%':
+         input /= 100;
+         firstEntry = input;
+         calcDisplay.innerHTML = input;
+         checkEqualPressed = false;
+         break;
 
       case '=':
          storeButtonsPressed(buttonPressed);
-         calcDisplay.innerHTML = operations[operator](Number(firstEntry), Number(followingEntry));
+         input = operations[operator](Number(firstEntry), Number(followingEntry));
+         firstEntry = input;
+         calcDisplay.innerHTML = input;
+         operator = "";
+         followingEntry = "";
+         checkEqualPressed = true;
          break;
 
       case '+':
@@ -68,11 +98,20 @@ function btnPress() {
 
       default:
          console.log({ input })
+         if (checkEqualPressed) {
+            input = "0";
+            firstEntry = "";
+            operator = "";
+            followingEntry = "";
+            checkEqualPressed = false;
+         }
+         if (input == "0") {
+            input = "";
+         }
          if (input.length < 11) {
             input += buttonPressed
          }
          calcDisplay.innerHTML = input;
-
    }
 }
 
