@@ -86,7 +86,7 @@ function btnPress() {
 
       case '.':
          updateVars();
-         if (!calcDisplay.innerHTML.includes('.')) {
+         if (!input.includes('.')) {
             input += buttonPressed
             calcDisplay.innerHTML = input;
          }
