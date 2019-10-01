@@ -131,19 +131,24 @@ function btnPress() {
 // Create Calculator UI
 function loadCalculator() {
    var newDiv = document.createElement('div');
-   newDiv.className = "container mx-auto w-100";
-   // newDiv.setAttribute("style", "width: 279px")
+   newDiv.className = "container mx-auto";
+   newDiv.setAttribute("style", "height: 320px");
+ 
+   var calculator = document.createElement('div');
+   calculator.className = "mx-auto h-100";
+   calculator.setAttribute("style", "width: 220px");
+
 
    var title = document.createElement('p');
    title.innerHTML = "Calculated.";
    title.className = "h2 text-center";
-   newDiv.appendChild(title);
+   calculator.appendChild(title);
 
    var calcDisplay = document.createElement('p');
    calcDisplay.innerHTML = "0";
    calcDisplay.id = "calcDisplay";
    calcDisplay.className = "h2 text-right pr-4 pt-3";
-   newDiv.append(calcDisplay);
+   calculator.append(calcDisplay);
 
    for (let i = 0; i < 5; i++) {
       var rowDiv = document.createElement('div');
@@ -160,7 +165,8 @@ function loadCalculator() {
          colDiv.appendChild(labels);
          rowDiv.appendChild(colDiv);
       }
-      newDiv.appendChild(rowDiv);
+      calculator.appendChild(rowDiv);
    }
+   newDiv.appendChild(calculator);
    app.appendChild(newDiv);
 }
