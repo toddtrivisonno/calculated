@@ -10,6 +10,12 @@ var firstEntry = "";
 var operator = "";
 var followingEntry = "";
 var doMath = 0;
+var operations = {
+   '+': function(a, b) { return a + b },
+   '-': function(a, b) { return a - b },
+   '\xD7': function(a, b) { return a * b },
+   '\xF7': function(a, b) { return a / b },
+};
 
 function storeButtonsPressed(b) {
 
@@ -30,15 +36,22 @@ function btnPress() {
    var buttonPressed = this.id;
 
    switch (buttonPressed) {
+
+      case 'AC':
+            storeButtonsPressed(buttonPressed);
+            calcDisplay.innerHTML = calcDisplay.innerHTML *= 0;
+
+      case '+/-':
+         storeButtonsPressed(buttonPressed);
+         calcDisplay.innerHTML = calcDisplay.innerHTML *= -1;
+
       case '=':
          storeButtonsPressed(buttonPressed);
-         calcDisplay.innerHTML = firstEntry + operator + followingEntry;
-
+         calcDisplay.innerHTML = operations[operator](Number(firstEntry), Number(followingEntry));
          break;
 
       case '+':
          storeButtonsPressed(buttonPressed);
-
          break;
 
       case '-':
@@ -48,12 +61,10 @@ function btnPress() {
       case '\xF7':
          storeButtonsPressed(buttonPressed);
          break;
+
       case '\xD7':
-
          storeButtonsPressed(buttonPressed);
-
          break;
-
 
       default:
          console.log({ input })
