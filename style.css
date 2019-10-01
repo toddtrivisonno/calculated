@@ -3,15 +3,31 @@ p {
 }
 
 body {
-   background-color: #343a40;
+   background-color: #212529 ;
    padding: 3em;
 }
+
+/* .container {
+   max-width: 279px;
+   min-width: 279px;
+   max-height: 442px;
+   min-height: 442px;
+} */
 
 
 .col-3.border.btn-warning {
    /* border-radius: 50%; */
+   font-size: 1.75em;
 }
 
-/* [id='0-0'] {
-   color: blue;
-} */
+[id='+/-'], [id='AC'], [id='%'], [id='C'] {
+   background-color:lightgray;
+   color: #343a40;
+}
+
+[id='0'], [id='1'], [id='2'], [id='3'], [id='4'], [id='5'], [id='6'], [id='7'], [id='8'], [id='9'], [id='.'] {
+   background-color: #343a40;
+   color: #f8f9fa;
+}
+
+
