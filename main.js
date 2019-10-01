@@ -17,21 +17,34 @@ var operations = {
    '\xF7': function (a, b) { return a / b },
 };
 
+function updateVars() {
+   if (checkEqualPressed) {
+      operator = "";
+      followingEntry = "";
+      checkEqualPressed = false;
+   }
+}
+
 function storeButtonsPressed(b) {
+   if (firstEntry == "") {
+      firstEntry = input;
+      // input = "";
+   } else {
+      if (!checkEqualPressed) {
+         followingEntry = input;
+      }
+   }
    if (b == '+' || b == '-' || b == '\xF7' || b == '\xD7') {
       operator = b;
       checkEqualPressed = false;
+      input = "";
    } else {
+      if (!checkEqualPressed) {
+         input = "";
+      }
       checkEqualPressed = true;
    }
-   if (firstEntry == "") {
-      firstEntry = input;
-   } else {
-      followingEntry = input;
-   }
-   console.log({ input, b, firstEntry, operator, followingEntry });
-   input = "";
-
+   // console.log({ input, b, firstEntry, operator, followingEntry });
 }
 
 // When a button is pressed
@@ -55,8 +68,8 @@ function btnPress() {
          checkEqualPressed = false;
          break;
 
-
       case '+/-':
+         updateVars();
          input *= -1;
          firstEntry = input;
          calcDisplay.innerHTML = input;
@@ -64,40 +77,40 @@ function btnPress() {
          break;
 
       case '%':
+         updateVars();
          input /= 100;
          firstEntry = input;
          calcDisplay.innerHTML = input;
          checkEqualPressed = false;
          break;
 
+      case '.':
+         updateVars();
+         if (!calcDisplay.innerHTML.includes('.')) {
+            input += buttonPressed
+            calcDisplay.innerHTML = input;
+         }
+         break;
+
       case '=':
          storeButtonsPressed(buttonPressed);
-         input = operations[operator](Number(firstEntry), Number(followingEntry));
-         firstEntry = input;
-         calcDisplay.innerHTML = input;
-         operator = "";
-         followingEntry = "";
+         firstEntry = operations[operator](Number(firstEntry), Number(followingEntry));
+         console.log({ followingEntry });
+
+         calcDisplay.innerHTML = firstEntry;
          checkEqualPressed = true;
          break;
 
       case '+':
-         storeButtonsPressed(buttonPressed);
-         break;
-
       case '-':
-         storeButtonsPressed(buttonPressed);
-         break;
-
       case '\xF7':
-         storeButtonsPressed(buttonPressed);
-         break;
-
       case '\xD7':
+         updateVars();
          storeButtonsPressed(buttonPressed);
          break;
 
       default:
-         console.log({ input })
+         // console.log({ input })
          if (checkEqualPressed) {
             input = "0";
             firstEntry = "";
@@ -117,19 +130,21 @@ function btnPress() {
 
 // Create Calculator UI
 function loadCalculator() {
+   var newDiv = document.createElement('div');
+   newDiv.className = "container mx-auto w-100";
+   // newDiv.setAttribute("style", "width: 279px")
+
    var title = document.createElement('p');
    title.innerHTML = "Calculated.";
    title.className = "h2 text-center";
-   app.appendChild(title);
+   newDiv.appendChild(title);
 
    var calcDisplay = document.createElement('p');
    calcDisplay.innerHTML = "0";
    calcDisplay.id = "calcDisplay";
    calcDisplay.className = "h2 text-right pr-4 pt-3";
-   app.append(calcDisplay);
+   newDiv.append(calcDisplay);
 
-   var newDiv = document.createElement('div');
-   newDiv.className = "container";
    for (let i = 0; i < 5; i++) {
       var rowDiv = document.createElement('div');
       rowDiv.className = "row justify-content-center";
