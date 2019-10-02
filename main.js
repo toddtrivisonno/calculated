@@ -9,6 +9,8 @@ var input = "";
 var firstEntry = "";
 var operator = "";
 var followingEntry = "";
+// var secondOpPress = false;
+var previousOperator = "";
 var checkEqualPressed = false;
 var operations = {
    '+': function (a, b) { return a + b },
@@ -16,25 +18,30 @@ var operations = {
    '\xD7': function (a, b) { return a * b },
    '\xF7': function (a, b) { return a / b },
 };
+// var inputArray = [];
 
 function updateVars() {
    if (checkEqualPressed) {
       operator = "";
       followingEntry = "";
       checkEqualPressed = false;
+      previousOperator = "";
    }
 }
 
+// Store what has been pressed
 function storeButtonsPressed(b) {
+   // inputArray.push(input);
+
    if (firstEntry == "") {
       firstEntry = input;
-      // input = "";
    } else {
-      if (!checkEqualPressed) {
+      if (!checkEqualPressed && previousOperator != "") {
          followingEntry = input;
       }
    }
    if (b == '+' || b == '-' || b == '\xF7' || b == '\xD7') {
+      previousOperator = operator; // store previous, can be "" if first operator clicked
       operator = b;
       checkEqualPressed = false;
       input = "";
@@ -73,7 +80,7 @@ function btnPress() {
          input *= -1;
          firstEntry = input;
          calcDisplay.innerHTML = input;
-         checkEqualPressed = false;
+
          break;
 
       case '%':
@@ -81,7 +88,7 @@ function btnPress() {
          input /= 100;
          firstEntry = input;
          calcDisplay.innerHTML = input;
-         checkEqualPressed = false;
+
          break;
 
       case '.':
@@ -94,19 +101,34 @@ function btnPress() {
 
       case '=':
          storeButtonsPressed(buttonPressed);
-         firstEntry = operations[operator](Number(firstEntry), Number(followingEntry));
-         console.log({ followingEntry });
+         firstEntry = operations[previousOperator](Number(firstEntry), Number(followingEntry));
+         // console.log({ followingEntry });
 
          calcDisplay.innerHTML = firstEntry;
          checkEqualPressed = true;
+         previousOperator = "";
+         operator = "";
+         followingEntry = "";
          break;
 
       case '+':
       case '-':
       case '\xF7':
       case '\xD7':
-         updateVars();
+         // if its the second time an operator has been pressed, do just a little different
+         // if previous == "", set it to operator
+
          storeButtonsPressed(buttonPressed);
+         if (previousOperator == "") {
+            previousOperator = operator;
+         }
+         firstEntry = operations[previousOperator](Number(firstEntry), Number(followingEntry));
+         calcDisplay.innerHTML = firstEntry;
+         // secondOpPress = true;
+         console.log({ firstEntry, operator, followingEntry, previousOperator });
+
+         updateVars();
+         //storeButtonsPressed(buttonPressed);
          break;
 
       default:
@@ -133,7 +155,7 @@ function loadCalculator() {
    var newDiv = document.createElement('div');
    newDiv.className = "container mx-auto";
    newDiv.setAttribute("style", "height: 320px");
- 
+
    var calculator = document.createElement('div');
    calculator.className = "mx-auto h-100";
    calculator.setAttribute("style", "width: 220px");
