@@ -9,7 +9,7 @@ var input = "";
 var firstEntry = "";
 var operator = "";
 var followingEntry = "";
-// var secondOpPress = false;
+
 var previousOperator = "";
 var checkEqualPressed = false;
 var operations = {
@@ -18,7 +18,7 @@ var operations = {
    '\xD7': function (a, b) { return a * b },
    '\xF7': function (a, b) { return a / b },
 };
-// var inputArray = [];
+var inputArray = [];
 
 function updateVars() {
    if (checkEqualPressed) {
@@ -29,28 +29,20 @@ function updateVars() {
    }
 }
 
-// Store what has been pressed
+// Add each entry to the array
 function storeButtonsPressed(b) {
-   // inputArray.push(input);
 
-   if (firstEntry == "") {
-      firstEntry = input;
-   } else {
-      if (!checkEqualPressed && previousOperator != "") {
-         followingEntry = input;
-      }
-   }
+   inputArray.push(input);          // Puts numbers input into main array
+   input = "";                      // Clears input for next number input
+
    if (b == '+' || b == '-' || b == '\xF7' || b == '\xD7') {
-      previousOperator = operator; // store previous, can be "" if first operator clicked
-      operator = b;
-      checkEqualPressed = false;
-      input = "";
-   } else {
-      if (!checkEqualPressed) {
-         input = "";
-      }
-      checkEqualPressed = true;
-   }
+      inputArray[0] = inputArray.join("");      // 
+      console.log(inputArray[0]);
+   } 
+   
+   inputArray.push(b);
+   console.log({b});
+   console.log({inputArray});
    // console.log({ input, b, firstEntry, operator, followingEntry });
 }
 
@@ -61,18 +53,22 @@ function btnPress() {
    switch (buttonPressed) {
 
       case 'AC':
-         input = "0";
-         firstEntry = "";
-         operator = "";
-         followingEntry = "";
-         calcDisplay.innerHTML = input;
-         checkEqualPressed = false;
+         input = "";
+         inputArray = [];
+         calcDisplay.innerHTML = "0";
          break;
 
       case 'C':
-         input = "0";
-         calcDisplay.innerHTML = input;
-         checkEqualPressed = false;
+         // if inputArray.length = 3, pop last and operator
+         // if = 2, clear all
+         var output = "0";
+         if(inputArray.length > 2){
+            inputArray.pop();
+            output = inputArray[0];
+         } else {
+            inputArray = [];
+         }
+         calcDisplay.innerHTML = output;
          break;
 
       case '+/-':
@@ -100,32 +96,45 @@ function btnPress() {
          break;
 
       case '=':
-         storeButtonsPressed(buttonPressed);
-         firstEntry = operations[previousOperator](Number(firstEntry), Number(followingEntry));
-         // console.log({ followingEntry });
+         storeButtonsPressed(buttonPressed);    // Puts second round of numbers into array
 
-         calcDisplay.innerHTML = firstEntry;
-         checkEqualPressed = true;
-         previousOperator = "";
-         operator = "";
-         followingEntry = "";
+         console.log(inputArray);
+         var calculate = operations[inputArray[1]](Number(inputArray[0]), Number(inputArray[2]));
+         console.log(calculate);
+         calcDisplay.innerHTML = calculate;
+         // storeButtonsPressed(buttonPressed);
+         // var lastEntry = inputArray.join(""); // string 22,+,4,4
+         // lastEntry = lastEntry.split(inputArray[1]); // array 22, 44
+         // var lastEntry = inputArray[0];
+         // console.log({lastEntry});
+         // firstEntry = operations[inputArray[1]](Number(lastEntry[0]), Number(lastEntry[1]));
+         // calcDisplay.innerHTML = firstEntry;
          break;
 
       case '+':
       case '-':
       case '\xF7':
       case '\xD7':
-         // if its the second time an operator has been pressed, do just a little different
-         // if previous == "", set it to operator
 
          storeButtonsPressed(buttonPressed);
-         if (previousOperator == "") {
-            previousOperator = operator;
-         }
-         firstEntry = operations[previousOperator](Number(firstEntry), Number(followingEntry));
-         calcDisplay.innerHTML = firstEntry;
+         
+         // var lastEntry = inputArray.join(""); // string 22,+
+         // console.log({lastEntry});
+         // lastEntry = lastEntry.split(inputArray[1]); 
+         // console.log({lastEntry});
+
+         // if (inputArray.length > 2){       //  22, +, 4, +
+            
+         //    var tmp = operations[inputArray[1]](Number(inputArray[0]), Number(inputArray[2]));
+         //    inputArray = [];
+         //    inputArray.push(tmp);
+         //    console.log(tmp);
+         // }
+
+         
+         // calcDisplay.innerHTML = firstEntry;
          // secondOpPress = true;
-         console.log({ firstEntry, operator, followingEntry, previousOperator });
+         // console.log({ firstEntry, operator, followingEntry, previousOperator });
 
          updateVars();
          //storeButtonsPressed(buttonPressed);
@@ -135,18 +144,19 @@ function btnPress() {
          // console.log({ input })
          if (checkEqualPressed) {
             input = "0";
-            firstEntry = "";
-            operator = "";
-            followingEntry = "";
+            // firstEntry = "";
+            // operator = "";
+            // followingEntry = "";
             checkEqualPressed = false;
          }
-         if (input == "0") {
+         if (input == "0") {              // Prevents stand alone repeating zeros
             input = "";
          }
-         if (input.length < 11) {
-            input += buttonPressed
+         if (input.length < 11) {         // Caps input display to 10 characters
+            input += buttonPressed        // Concats consecutive number presses
          }
-         calcDisplay.innerHTML = input;
+         
+         calcDisplay.innerHTML = input;   // Displays input
    }
 }
 
