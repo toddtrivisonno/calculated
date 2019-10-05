@@ -7,6 +7,7 @@ let count = 0;
 var app = document.getElementById('app');
 var input = "";
 var firstEntry = "";
+var previousOperator = "";
 var operator = "";
 var followingEntry = "";
 var checkEqualPressed = false;
@@ -23,17 +24,11 @@ function updateVars() {
       followingEntry = "";
       checkEqualPressed = false;
    }
+   followingEntry = "";
 }
 
 function storeButtonsPressed(b) {
-   if (firstEntry == "") {
-      firstEntry = input;
-      // input = "";
-   } else {
-      if (!checkEqualPressed) {
-         followingEntry = input;
-      }
-   }
+
    if (b == '+' || b == '-' || b == '\xF7' || b == '\xD7') {
       operator = b;
       checkEqualPressed = false;
@@ -44,7 +39,7 @@ function storeButtonsPressed(b) {
       }
       checkEqualPressed = true;
    }
-   // console.log({ input, b, firstEntry, operator, followingEntry });
+   console.log({ input, b, firstEntry, previousOperator, operator, followingEntry });
 }
 
 // When a button is pressed
@@ -63,17 +58,33 @@ function btnPress() {
          break;
 
       case 'C':
+
          input = "0";
+         if (followingEntry === "") {
+            firstEntry = "";
+         }
+         followingEntry = "";
          calcDisplay.innerHTML = input;
          checkEqualPressed = false;
          break;
 
       case '+/-':
-         updateVars();
+         // updateVars();
+         if (checkEqualPressed) {
+            input = calcDisplay.innerHTML;
+            firstEntry = input;
+            followingEntry = "";
+         }
          input *= -1;
-         firstEntry = input;
+         if (followingEntry != "") {
+            followingEntry = input;
+         } else {
+            firstEntry = input;
+         }
          calcDisplay.innerHTML = input;
          checkEqualPressed = false;
+         console.log({ input, firstEntry, previousOperator, operator, followingEntry });
+
          break;
 
       case '%':
@@ -86,31 +97,48 @@ function btnPress() {
 
       case '.':
          updateVars();
-         if (!input.includes('.')) {
+         if (!input.includes('.')) {  // Prevents multiple decimal points
             input += buttonPressed
             calcDisplay.innerHTML = input;
          }
          break;
 
       case '=':
-         storeButtonsPressed(buttonPressed);
-         firstEntry = operations[operator](Number(firstEntry), Number(followingEntry));
-         console.log({ followingEntry });
+         if (operator === "") {
+            input = "0";
+            firstEntry = "";
+            operator = "";
+            followingEntry = "";
+            calcDisplay.innerHTML = input;
+            checkEqualPressed = false;
+         } else {
+            storeButtonsPressed(buttonPressed);
+            firstEntry = operations[operator](Number(firstEntry), Number(followingEntry));
+            console.log({ input, firstEntry, previousOperator, operator, followingEntry });
 
-         calcDisplay.innerHTML = firstEntry;
-         checkEqualPressed = true;
+            calcDisplay.innerHTML = firstEntry;
+            checkEqualPressed = true;
+         }
          break;
 
       case '+':
       case '-':
       case '\xF7':
       case '\xD7':
+         if (checkEqualPressed) {
+            followingEntry = "";
+         }
+         console.log({ input, firstEntry, previousOperator, operator, followingEntry });
+         if (followingEntry != "") {
+            firstEntry = operations[previousOperator](Number(firstEntry), Number(followingEntry));
+            calcDisplay.innerHTML = firstEntry;
+            console.log({ input, firstEntry, previousOperator, operator, followingEntry });
+         }
          updateVars();
          storeButtonsPressed(buttonPressed);
          break;
 
       default:
-         // console.log({ input })
          if (checkEqualPressed) {
             input = "0";
             firstEntry = "";
@@ -120,11 +148,21 @@ function btnPress() {
          }
          if (input == "0") {
             input = "";
+            firstEntry = "";
          }
-         if (input.length < 11) {
-            input += buttonPressed
+         if (input.length < 11) {      // Cap input to 10 numbers
+            if (operator != "") {
+               followingEntry += buttonPressed;
+               previousOperator = operator;
+               calcDisplay.innerHTML = followingEntry;
+            } else {
+               firstEntry += buttonPressed;
+               calcDisplay.innerHTML = firstEntry;
+            }
          }
-         calcDisplay.innerHTML = input;
+         input = calcDisplay.innerHTML;
+         console.log({ input, firstEntry, previousOperator, operator, followingEntry });
+
    }
 }
 
@@ -133,7 +171,7 @@ function loadCalculator() {
    var newDiv = document.createElement('div');
    newDiv.className = "container mx-auto";
    newDiv.setAttribute("style", "height: 320px");
- 
+
    var calculator = document.createElement('div');
    calculator.className = "mx-auto h-100";
    calculator.setAttribute("style", "width: 220px");
