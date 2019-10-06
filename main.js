@@ -88,18 +88,48 @@ function btnPress() {
          break;
 
       case '%':
-         updateVars();
+         // updateVars();
+         if (checkEqualPressed) {
+            input = calcDisplay.innerHTML;
+            firstEntry = input;
+            followingEntry = "";
+         }
          input /= 100;
-         firstEntry = input;
+         if (followingEntry != "") {
+            followingEntry = input;
+         } else {
+            firstEntry = input;
+         }
          calcDisplay.innerHTML = input;
          checkEqualPressed = false;
+         console.log({ input, firstEntry, previousOperator, operator, followingEntry });
+         // firstEntry = input;
+         // calcDisplay.innerHTML = input;
+         // checkEqualPressed = false;
          break;
 
       case '.':
-         updateVars();
-         if (!input.includes('.')) {  // Prevents multiple decimal points
-            input += buttonPressed
-            calcDisplay.innerHTML = input;
+         // updateVars();
+         if (checkEqualPressed) {
+            followingEntry = "";
+            input = calcDisplay;
+            operator = "";
+            checkEqualPressed = false;
+         }
+         if (operator !== "") {
+            if (!input.includes('.')) {
+               followingEntry += buttonPressed;
+               calcDisplay.innerHTML = followingEntry;
+            }
+         }
+         else {
+            if (operator == "") {
+               if (!input.includes('.')) {
+                  input += buttonPressed;
+                  firstEntry = input;
+                  calcButtons.innerHTML = firstEntry;
+               }
+            }
          }
          break;
 
