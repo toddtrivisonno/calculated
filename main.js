@@ -112,12 +112,20 @@ function btnPress() {
          // updateVars();
          if (checkEqualPressed) {
             followingEntry = "";
-            input = calcDisplay;
+            if (input == "") {
+               firstEntry = "0.";
+            }
+            // input = calcDisplay;
             operator = "";
+            console.log({ input, firstEntry, previousOperator, operator, followingEntry });
+
             checkEqualPressed = false;
          }
          if (operator !== "") {
             if (!input.includes('.')) {
+               if (input == "") {
+                  followingEntry = "0";
+               }
                followingEntry += buttonPressed;
                calcDisplay.innerHTML = followingEntry;
             }
